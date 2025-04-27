@@ -172,38 +172,38 @@ async def send_project_details(update: Update, context: ContextTypes.DEFAULT_TYP
     query = update.callback_query
     user_id = query.from_user.id
 
-    project_photos = {  
-        'project_website': ("🌐 **Website Development**", "https://assets.onecompiler.app/43ea4pg72/43fr339cx/web-development-flat-landing-page-creative-team-designers-developers-work-together-illustration-full-stack-development-software-engineering-web-page-composition-with-people-characters_9209-3545.webp"),  
-        'project_app': ("📱 **App Development**", "https://i.postimg.cc/JnRTm9fF/app-development-banner-33099-1720.webp"),  
-        'project_uiux': ("🎨 **UI/UX Design**", "https://i.postimg.cc/QCySQVFL/realistic-ui-ux-background-23-2149046824.webp"),  
-        'project_chatbot': ("🤖 **Chat Bot**", "https://i.postimg.cc/YSHRf5CS/chat-bot-concept-illustration-114360-5223.webp"),  
-        'project_support': ("☎️ **Customer Support**", "https://i.postimg.cc/sxv4gywT/organic-flat-design-customer-support-23-2148887076.webp"),  
-        'project_programming': ("👨‍💻 **Programming**", "https://i.postimg.cc/VvpBSThm/flat-composition-with-programmer-testing-programs-illustration-1284-55908.webp"),  
-    }  
+    project_details = {  
+        'project_website': "🌐 **Website Development**\nDetails about website projects.",  
+        'project_app': "📱 **App Development**\nDetails about app development.",  
+        'project_uiux': "🎨 **UI/UX Design**\nDetails about UI/UX design.",  
+        'project_chatbot': "🤖 **Chat Bot Development**\nDetails about chatbot development.",  
+        'project_support': "☎️ **Customer Support**\nDetails about customer support.",  
+        'project_programming': "👨‍💻 **Programming**\nDetails about programming projects."  
+    }
 
-    title, photo_url = project_photos.get(query.data, ("Project", ""))  
+    text = project_details.get(query.data, "No details available.")
 
-    back_button = InlineKeyboardButton("🔙 Back", callback_data='projects')  
+    back_button = InlineKeyboardButton("🔙 Back", callback_data='back_to_menu')  
 
-    await context.bot.send_photo(  
+    await context.bot.edit_message_text(  
         chat_id=user_id,  
-        photo=photo_url,  
-        caption=title,  
+        message_id=USER_MESSAGE_ID[user_id],  
+        text=text,  
         reply_markup=InlineKeyboardMarkup([back_button]),  
         parse_mode='Markdown'  
     )
 
-# /help কমান্ড
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Use /start to restart the bot.")
+# অ্যাপ্লিকেশন সেটআপ
+async def main():
+    application = ApplicationBuilder().token(TOKEN).build()
 
-# মেইন এপ রুন করা
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(language_selected, pattern='^set_lang_'))
+    application.add_handler(CallbackQueryHandler(button_handler))
+    application.add_handler(CallbackQueryHandler(send_project_details, pattern='^project_'))
+
+    await application.run_polling()
+
 if __name__ == '__main__':
-    app = ApplicationBuilder().token(TOKEN).build()
-
-    app.add_handler(CommandHandler('start', start))  
-    app.add_handler(CommandHandler('help', help_command))  
-    app.add_handler(CallbackQueryHandler(language_selected, pattern='^set_lang_'))  
-    app.add_handler(CallbackQueryHandler(button_handler))  
-
-    app.run_polling()
+    import asyncio
+    asyncio.run(main())
