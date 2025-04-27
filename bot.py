@@ -5,7 +5,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 USER_LANGUAGE = {}
 USER_MESSAGE_ID = {}
 
-TOKEN = '7870153726:AAHNAJWQpMhk2UXe1iXwWBiNC59ojAMnbO8'  # <-- এখানে তোমার BotFather টোকেন বসাও
+TOKEN = '8147124086:AAF8RnTlyUBARkNMnwxMWktgm1JF8gVZTUY'  # <-- এখানে তোমার BotFather টোকেন বসাও
 
 # /start কমান্ড
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
