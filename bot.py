@@ -96,27 +96,21 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "- UI/UX Design\n"
             "- Digital Marketing"
         ) if lang == 'en' else (
-            "**আমার দক্ষতা**\n\n"
+            "**আমার স্কিলস**\n\n"
             "- ওয়েব ডেভেলপমেন্ট\n"
             "- অ্যাপ ডেভেলপমেন্ট\n"
             "- গ্রাফিক ডিজাইন\n"
             "- বট ডেভেলপমেন্ট\n"
             "- ইউআই/ইউএক্স ডিজাইন\n"
             "- ডিজিটাল মার্কেটিং"
-        )  
+        )
 
     elif query.data == 'projects':  
-        text = (
-            "**My Projects**\n\n"
-            "- Ludo BD Premium\n"
-            "- King of Ludo Bot\n"
-            "- Premium Service Website"
-        ) if lang == 'en' else (
-            "**আমার প্রজেক্টস**\n\n"
-            "- লুডো বিডি প্রিমিয়াম\n"
-            "- কিং অফ লুডো বট\n"
-            "- প্রিমিয়াম সার্ভিস ওয়েবসাইট"
-        )  
+        await send_projects_menu(update, context)  
+        return  
+
+    elif query.data == 'website':  
+        text = "🌐 Visit my website: [Click Here](https://swygen.netlify.app/)"  
 
     elif query.data == 'contact':  
         text = (
@@ -129,7 +123,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "ইমেইল: swygenofficial@gmail.com\n"
             "ফোন: 01621439834\n"
             "হোয়াটসঅ্যাপ: https://wa.me/message/BQ77IMY2MHW6E1"
-        )  
+        )
 
     elif query.data == 'privacy':  
         text = "📜 [Read our Privacy Policy](https://swygen.netlify.app/police)"  
@@ -145,6 +139,56 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=user_id,  
         message_id=USER_MESSAGE_ID[user_id],  
         text=text,  
+        reply_markup=InlineKeyboardMarkup([back_button]),  
+        parse_mode='Markdown'  
+    )
+
+# প্রজেক্ট মেনু পাঠানোর ফাংশন
+async def send_projects_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+
+    keyboard = [  
+        [InlineKeyboardButton("🌐 Website Developer", callback_data='project_website')],  
+        [InlineKeyboardButton("📱 App Developer", callback_data='project_app')],  
+        [InlineKeyboardButton("🎨 UI/UX Designer", callback_data='project_uiux')],  
+        [InlineKeyboardButton("🤖 Chat Bot Developer", callback_data='project_chatbot')],  
+        [InlineKeyboardButton("☎️ Customer Support", callback_data='project_support')],  
+        [InlineKeyboardButton("👨‍💻 Programming", callback_data='project_programming')],  
+        [InlineKeyboardButton("🔙 Back", callback_data='back_to_menu')],  
+    ]  
+
+    text = "🗂️ **My Projects**\n\nChoose a project to explore:"  
+
+    await context.bot.edit_message_text(  
+        chat_id=user_id,  
+        message_id=USER_MESSAGE_ID[user_id],  
+        text=text,  
+        reply_markup=InlineKeyboardMarkup(keyboard),  
+        parse_mode='Markdown'  
+    )
+
+# নির্দিষ্ট প্রজেক্ট ডিটেইল পাঠানোর ফাংশন
+async def send_project_details(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    user_id = query.from_user.id
+
+    project_photos = {  
+        'project_website': ("🌐 **Website Development**", "https://assets.onecompiler.app/43ea4pg72/43fr339cx/web-development-flat-landing-page-creative-team-designers-developers-work-together-illustration-full-stack-development-software-engineering-web-page-composition-with-people-characters_9209-3545.webp"),  
+        'project_app': ("📱 **App Development**", "https://i.postimg.cc/JnRTm9fF/app-development-banner-33099-1720.webp"),  
+        'project_uiux': ("🎨 **UI/UX Design**", "https://i.postimg.cc/QCySQVFL/realistic-ui-ux-background-23-2149046824.webp"),  
+        'project_chatbot': ("🤖 **Chat Bot**", "https://i.postimg.cc/YSHRf5CS/chat-bot-concept-illustration-114360-5223.webp"),  
+        'project_support': ("☎️ **Customer Support**", "https://i.postimg.cc/sxv4gywT/organic-flat-design-customer-support-23-2148887076.webp"),  
+        'project_programming': ("👨‍💻 **Programming**", "https://i.postimg.cc/VvpBSThm/flat-composition-with-programmer-testing-programs-illustration-1284-55908.webp"),  
+    }  
+
+    title, photo_url = project_photos.get(query.data, ("Project", ""))  
+
+    back_button = InlineKeyboardButton("🔙 Back", callback_data='projects')  
+
+    await context.bot.send_photo(  
+        chat_id=user_id,  
+        photo=photo_url,  
+        caption=title,  
         reply_markup=InlineKeyboardMarkup([back_button]),  
         parse_mode='Markdown'  
     )
